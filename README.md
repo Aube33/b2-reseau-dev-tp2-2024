@@ -49,3 +49,5 @@ LISTEN 0      1          10.0.1.12:13337      0.0.0.0:*    users:(("python",pid=
 ## II. You say dev I say good practices
 
 ### 1. Args
+
+### 2. Logs
