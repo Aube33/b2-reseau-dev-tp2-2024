@@ -10,7 +10,7 @@ conn, addr = s.accept()
 
 while True:
     try:
-        data = conn.recv(1024)
+        data = conn.recv(1024).decode("utf-8")
         if not data: break
 
         client_hostname = socket.gethostname()

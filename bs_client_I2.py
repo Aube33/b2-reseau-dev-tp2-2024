@@ -11,7 +11,9 @@ try:
     s.connect((host, port))
     print(f"Connecté avec succès au serveur {host} sur le port {port}")
     s.sendall(str.encode(val))
-    data = s.recv(1024)
+    data = s.recv(1024).decode("utf-8")
+
+    print(data)
 
     s.close()
 except:
