@@ -169,10 +169,10 @@ while True:
 
         logging.info(f"Un client ({client_ip}) s'est connecté.")
 
-        logging.info(f'Le client {client_ip} a envoyé "{data}".')
-
         data = conn.recv(1024).decode("utf-8")
         if not data: break
+
+        logging.info(f'Le client {client_ip} a envoyé "{data}".')
 
         message = ""
         if "meo" in data:
