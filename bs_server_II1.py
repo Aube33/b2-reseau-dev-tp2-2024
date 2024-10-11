@@ -116,10 +116,11 @@ s.bind((host, port))
 
 s.listen(1)
 print(f"Serveur lancé sur {host}:{port} !")
-conn, (client_ip, client_port) = s.accept()
 
 while True:
     try:
+        conn, (client_ip, client_port) = s.accept()
+
         print(f"Un client vient de se co et son IP c'est {client_ip}.")
 
         data = conn.recv(1024).decode("utf-8")

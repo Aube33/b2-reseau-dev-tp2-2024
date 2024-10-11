@@ -21,7 +21,7 @@ class CustomFormatter(logging.Formatter):
 
     def format(self, record):
         log_fmt = self.FORMATS.get(record.levelno)
-        formatter = logging.Formatter(log_fmt)
+        formatter = logging.Formatter(log_fmt, datefmt="%Y-%m-%d %H:%M")
         return formatter.format(record)
 
 file_handler = logging.FileHandler(f"{LOG_DIR}/{LOG_FILE}", encoding="utf-8", mode="a")
@@ -157,10 +157,11 @@ s.settimeout(5)
 logging.info(f"Le serveur tourne sur {host}:{port}")
 timeSave = time.time()
 
-conn, (client_ip, client_port) = s.accept()
 
 while True:
     try:
+        conn, (client_ip, client_port) = s.accept()
+
         logging.info(f"Un client ({client_ip}) s'est connecté.")
         timeSave = time.time()
 
@@ -180,12 +181,11 @@ while True:
         conn.sendall(str.encode(message, "utf-8"))
         logging.info(f'Réponse envoyée au client {client_ip} : "{message}".')
 
+        conn.close()
+
+    except TimeoutError:
+        logging.warning("Aucun client depuis plus de une minute.")
+        break
     except socket.error:
         print("Error Occured.")
         break
-    except socket.timeout:
-        print("tes")
-        logging.warning("Aucun client depuis plus de une minute.")
-        break
-
-conn.close()
