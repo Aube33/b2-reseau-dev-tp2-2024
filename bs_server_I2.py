@@ -19,7 +19,7 @@ while True:
         print(f"Un client vient de se co et son IP c'est {client_ip}.")
 
         if "meo" in data:
-            conn.sendall(b"Meo à toi confrère.")
+            conn.sendall(b"Meo à toi confrère.".encode("utf-8"))
         elif "waf" in data:
             conn.sendall(b"ptdr t ki")
         else:
