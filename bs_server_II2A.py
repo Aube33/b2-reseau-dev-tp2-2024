@@ -2,6 +2,7 @@ import socket, sys, logging, os, time
 from psutil import net_if_addrs
 
 LOG_DIR = "/var/log/bs_server"
+LOG_FILE = "bs_server.log"
 
 class CustomFormatter(logging.Formatter):
     yellow = "\x1b[33;20m"
@@ -23,7 +24,7 @@ class CustomFormatter(logging.Formatter):
         formatter = logging.Formatter(log_fmt)
         return formatter.format(record)
 
-file_handler = logging.FileHandler(f"{LOG_DIR}/bs_server.log", encoding="utf-8", mode="a")
+file_handler = logging.FileHandler(f"{LOG_DIR}/{LOG_FILE}", encoding="utf-8", mode="a")
 file_handler.setLevel(logging.INFO)
 
 file_formatter = logging.Formatter("%(asctime)s %(levelname)s %(message)s", datefmt="%Y-%m-%d %H:%M")
