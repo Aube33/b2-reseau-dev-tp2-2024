@@ -19,9 +19,10 @@ try:
     s.sendall(str.encode(val))
     data = s.recv(1024).decode("utf-8")
 
+    print("Réponse du serveur: ", data)
+
     s.close()
 except:
     print("Une erreur a eu lieu !")
 
-print("Réponse du serveur: ", data)
 sys.exit(0)
