@@ -25,7 +25,8 @@ try:
     print("Réponse du serveur: ", data)
 
     s.close()
-except:
+except Exception as e:
     print("Impossible de se connecter au serveur !")
+    print(e)
 
 sys.exit(0)
