@@ -38,7 +38,10 @@ public (active)
   rich rules: 
 [antoine@server b2-reseau-dev-tp2-2024]$ python bs_server_I1.py 
 Données reçues du client : b'Meooooo !'
-[antoine@server b2-reseau-dev-tp2-2024]$ 
+[antoine@server b2-reseau-dev-tp2-2024]$ ss -lnpt | grep 13337
+LISTEN 0      1          10.0.1.12:13337      0.0.0.0:*    users:(("python",pid=1251,fd=3))
 ```
 
 ## 2. User friendly
+
+## 3. You say client I hear control
