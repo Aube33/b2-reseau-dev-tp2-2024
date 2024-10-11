@@ -1,4 +1,4 @@
-import socket
+import socket, sys
 
 host = '10.0.1.12'
 port = 13337
@@ -14,3 +14,5 @@ data = s.recv(1024)
 s.close()
 
 print(f"Le serveur a répondu {repr(data)}")
+
+sys.exit(0)
