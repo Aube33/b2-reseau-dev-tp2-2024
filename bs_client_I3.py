@@ -14,10 +14,7 @@ try:
     if type(val) is not str:
         raise TypeError("Veuillez entrer une string !")
     elif not re.search("^.*(meo|waf).*$", val):
-        print("test 1")
         raise ValueError("Mauvaise valeur entrée, soit waf soit meo !")
-
-    print("tes t2")
 
     s.sendall(str.encode(val))
     data = s.recv(1024).decode("utf-8")
