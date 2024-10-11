@@ -1,15 +1,42 @@
 import socket, sys, logging, os, time
 from psutil import net_if_addrs
 
-logging.basicConfig(
-    filename=f"{LOG_DIR}/server.log",
-    encoding="utf-8",
-    filemode="a",
-    format="{asctime} {levelname} {message}",
-    style="{",
-    datefmt="%Y-%m-%d %H:%M ",
-    level=logging.INFO
-)
+LOG_DIR = "/var/log/bs_server"
+
+class CustomFormatter(logging.Formatter):
+    yellow = "\x1b[33;20m"
+    red = "\x1b[31;20m"
+    bold_red = "\x1b[31;1m"
+    reset = "\x1b[0m"
+    format = "%(asctime)s %(levelname)s %(message)s"
+
+    FORMATS = {
+        logging.DEBUG: format,
+        logging.INFO: format,
+        logging.WARNING: yellow + format + reset,
+        logging.ERROR: red + format + reset,
+        logging.CRITICAL: bold_red + format + reset
+    }
+
+    def format(self, record):
+        log_fmt = self.FORMATS.get(record.levelno)
+        formatter = logging.Formatter(log_fmt)
+        return formatter.format(record)
+
+file_handler = logging.FileHandler(f"{LOG_DIR}/bs_server.log", encoding="utf-8", mode="a")
+file_handler.setLevel(logging.INFO)
+
+file_formatter = logging.Formatter("%(asctime)s %(levelname)s %(message)s", datefmt="%Y-%m-%d %H:%M")
+file_handler.setFormatter(file_formatter)
+
+console_handler = logging.StreamHandler()
+console_handler.setLevel(logging.INFO)
+console_handler.setFormatter(CustomFormatter())
+
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+logger.addHandler(file_handler)
+logger.addHandler(console_handler)
 
 host = ''
 port = 13337
@@ -126,7 +153,7 @@ s.bind((host, port))
 
 s.listen(1)
 
-logging.INFO(f"Le serveur tourne sur {host}:{port}")
+logging.info(f"Le serveur tourne sur {host}:{port}")
 timeSave = time.time()
 
 conn, addr = s.accept()
@@ -135,7 +162,7 @@ while True:
     print("tes tok")
     if time.time()-timeSave > 60000:
         timeSave = time.time()
-        logging.WARNING("Aucun client depuis plus de une minute.")
+        logging.warning("Aucun client depuis plus de une minute.")
     try:
         data = conn.recv(1024).decode("utf-8")
         if not data: break
@@ -143,9 +170,9 @@ while True:
         client_hostname = socket.gethostname()
         client_ip = socket.gethostbyname(client_hostname)
 
-        logging.INFO(f"Un client ({client_ip}) s'est connecté.")
+        logging.info(f"Un client ({client_ip}) s'est connecté.")
 
-        logging.INFO(f'Le client {client_ip} a envoyé "{data}".')
+        logging.info(f'Le client {client_ip} a envoyé "{data}".')
 
         message = ""
         if "meo" in data:
@@ -156,7 +183,7 @@ while True:
             message = "Mes respects humble humain."
 
         conn.sendall(str.encode(message, "utf-8"))
-        logging.INFO(f'Réponse envoyée au client {client_ip} : "{message}".')
+        logging.info(f'Réponse envoyée au client {client_ip} : "{message}".')
 
     except socket.error:
         print("Error Occured.")
