@@ -159,6 +159,8 @@ timeSave = time.time()
 
 conn, addr = s.accept()
 
+print(addr)
+
 while True:
     if time.time()-timeSave > 60000:
         timeSave = time.time()
