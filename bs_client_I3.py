@@ -23,6 +23,6 @@ try:
 
     s.close()
 except:
-    print("Une erreur a eu lieu !")
+    print("Impossible de se connecter au serveur !")
 
 sys.exit(0)
