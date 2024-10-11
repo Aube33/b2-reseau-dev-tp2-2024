@@ -10,13 +10,13 @@ conn, addr = s.accept()
 
 while True:
     try:
-        data = conn.recv(1024).decode("utf-8")
-        if not data: break
-
         client_hostname = socket.gethostname()
         client_ip = socket.gethostbyname(client_hostname)
 
         print(f"Un client vient de se co et son IP c'est {client_ip}.")
+
+        data = conn.recv(1024).decode("utf-8")
+        if not data: break
 
         if "meo" in data:
             conn.sendall(str.encode("Meo à toi confrère.", "utf-8"))
