@@ -151,8 +151,8 @@ if host=='':
 #=== CONNEXION AU SERVEUR ===
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.bind((host, port))  
-
 s.listen(1)
+s.settimeout(5)
 
 logging.info(f"Le serveur tourne sur {host}:{port}")
 timeSave = time.time()
@@ -160,12 +160,9 @@ timeSave = time.time()
 conn, (client_ip, client_port) = s.accept()
 
 while True:
-    if time.time()-timeSave > 60000:
-        timeSave = time.time()
-        logging.warning("Aucun client depuis plus de une minute.")
     try:
-
         logging.info(f"Un client ({client_ip}) s'est connecté.")
+        timeSave = time.time()
 
         data = conn.recv(1024).decode("utf-8")
         if not data: break
@@ -185,6 +182,10 @@ while True:
 
     except socket.error:
         print("Error Occured.")
+        break
+    except socket.timeout:
+        print("tes")
+        logging.warning("Aucun client depuis plus de une minute.")
         break
 
 conn.close()
