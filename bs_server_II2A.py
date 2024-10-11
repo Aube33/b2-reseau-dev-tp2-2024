@@ -186,6 +186,6 @@ while True:
     except TimeoutError:
         logging.warning("Aucun client depuis plus de une minute.")
         break
-    except socket.error:
-        print("Error Occured.")
+    except socket.error as e:
+        print(f"Error Occured: {e}")
         break
