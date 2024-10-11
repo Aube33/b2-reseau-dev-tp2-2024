@@ -7,7 +7,6 @@ s.bind((host, port))
 
 s.listen(1)
 conn, addr = s.accept()
-print('Connected by', addr)
 
 while True:
 
