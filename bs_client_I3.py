@@ -11,7 +11,7 @@ try:
     val = input("Que veux-tu envoyer au serveur : ")
 
     print(val)
-    print(re.search("^.*(meo|waf).*$", val))
+    print(re.search("^(meo|waf)$", val))
 
     if type(val) is not str:
         raise TypeError("Veuillez entrer une string !")
