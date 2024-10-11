@@ -160,20 +160,19 @@ timeSave = time.time()
 conn, addr = s.accept()
 
 while True:
-    print("tes tok")
     if time.time()-timeSave > 60000:
         timeSave = time.time()
         logging.warning("Aucun client depuis plus de une minute.")
     try:
-        data = conn.recv(1024).decode("utf-8")
-        if not data: break
-
         client_hostname = socket.gethostname()
         client_ip = socket.gethostbyname(client_hostname)
 
         logging.info(f"Un client ({client_ip}) s'est connecté.")
 
         logging.info(f'Le client {client_ip} a envoyé "{data}".')
+
+        data = conn.recv(1024).decode("utf-8")
+        if not data: break
 
         message = ""
         if "meo" in data:
