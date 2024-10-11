@@ -13,7 +13,9 @@ while True:
 
     try:
         data = conn.recv(1024)
-        
+
+        if not data: continue
+
         conn.sendall(b"Hi mate !")
 
         print(f"Données reçues du client : {data}")
