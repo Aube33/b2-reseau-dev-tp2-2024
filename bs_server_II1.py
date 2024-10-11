@@ -116,13 +116,10 @@ s.bind((host, port))
 
 s.listen(1)
 print(f"Serveur lancé sur {host}:{port} !")
-conn, addr = s.accept()
+conn, (client_ip, client_port) = s.accept()
 
 while True:
     try:
-        client_hostname = socket.gethostname()
-        client_ip = socket.gethostbyname(client_hostname)
-
         print(f"Un client vient de se co et son IP c'est {client_ip}.")
 
         data = conn.recv(1024).decode("utf-8")

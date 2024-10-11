@@ -6,13 +6,10 @@ s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.bind((host, port))  
 
 s.listen(1)
-conn, addr = s.accept()
+conn, (client_ip, client_port) = s.accept()
 
 while True:
     try:
-        client_hostname = socket.gethostname()
-        client_ip = socket.gethostbyname(client_hostname)
-
         print(f"Un client vient de se co et son IP c'est {client_ip}.")
 
         data = conn.recv(1024).decode("utf-8")

@@ -157,17 +157,13 @@ s.listen(1)
 logging.info(f"Le serveur tourne sur {host}:{port}")
 timeSave = time.time()
 
-conn, addr = s.accept()
-
-print(addr)
+conn, (client_ip, client_port) = s.accept()
 
 while True:
     if time.time()-timeSave > 60000:
         timeSave = time.time()
         logging.warning("Aucun client depuis plus de une minute.")
     try:
-        client_hostname = socket.gethostname()
-        client_ip = socket.gethostbyname(client_hostname)
 
         logging.info(f"Un client ({client_ip}) s'est connecté.")
 
