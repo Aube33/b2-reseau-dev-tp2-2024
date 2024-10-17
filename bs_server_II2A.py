@@ -152,7 +152,7 @@ if host=='':
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.bind((host, port))  
 s.listen(1)
-s.settimeout(5)
+s.settimeout(60)
 
 logging.info(f"Le serveur tourne sur {host}:{port}")
 timeSave = time.time()
