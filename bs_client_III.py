@@ -4,8 +4,8 @@ LOG_DIR = "/var/log/bs_client"
 LOG_FILE = "bs_client.log"
 
 
-def isCalcul(val: str):
-    return re.search("^(-?(100000|\d{0,5}))\s*([\+\-\*]\s*(-?(100000|\d{0,5})))*$", val)
+def is_calcul(value: str):
+    return re.search("^(-?(100000|\d{0,5}))\s*([\+\-\*]\s*(-?(100000|\d{0,5})))*$", value)
 
 
 class CustomFormatter(logging.Formatter):
@@ -57,9 +57,9 @@ try:
 
     val = input("Entrez votre calcul : ")
 
-    if type(val) is not str:
+    if isinstance(val, str):
         raise TypeError("Veuillez entrer une string !")
-    elif not isCalcul(val):
+    if not is_calcul(val):
         raise ValueError("Veuillez un calcul valide (+,-,*, min:-100000, max:100000)")
 
     s.sendall(str.encode(val))
