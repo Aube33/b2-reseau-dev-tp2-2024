@@ -1,26 +1,39 @@
-import socket, sys, re, logging
+# pylint: disable=anomalous-backslash-in-string, invalid-name, missing-module-docstring
+
+import socket
+import sys
+import re
+import logging
 
 LOG_DIR = "/var/log/bs_client"
 LOG_FILE = "bs_client.log"
 
 
 def is_calcul(value: str):
+    """
+    Permet de vérifier si la valeur entrée est bien un calcul avec soit 
+    multiplication, addition, soustraction
+    et avec comme valeurs max -100000 et 100000
+    """
     return re.search("^(-?(100000|\d{0,5}))\s*([\+\-\*]\s*(-?(100000|\d{0,5})))*$", value)
 
 
 class CustomFormatter(logging.Formatter):
+    """
+    Classe pour avoir un logger dans la console avec des jolies couleurs
+    """
     yellow = "\x1b[33;20m"
     red = "\x1b[31;20m"
     bold_red = "\x1b[31;1m"
     reset = "\x1b[0m"
-    format = "%(levelname)s %(message)s"
+    log_format = "%(levelname)s %(message)s"
 
     FORMATS = {
-        logging.DEBUG: format,
-        logging.INFO: format,
-        logging.WARNING: yellow + format + reset,
-        logging.ERROR: red + format + reset,
-        logging.CRITICAL: bold_red + format + reset,
+        logging.DEBUG: log_format,
+        logging.INFO: log_format,
+        logging.WARNING: yellow + log_format + reset,
+        logging.ERROR: red + log_format + reset,
+        logging.CRITICAL: bold_red + log_format + reset,
     }
 
     def format(self, record):
@@ -46,14 +59,14 @@ logger.setLevel(logging.INFO)
 logger.addHandler(file_handler)
 logger.addHandler(console_handler)
 
-host = "10.0.1.12"
-port = 13337
+HOST = "10.0.1.12"
+PORT = 13337
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 try:
-    s.connect((host, port))
+    s.connect((HOST, PORT))
 
-    logging.info(f"Connexion réussie à {host}:{port}.")
+    logging.info("Connexion réussie à %s:%d.", HOST, PORT)
 
     val = input("Entrez votre calcul : ")
 
@@ -63,16 +76,14 @@ try:
         raise ValueError("Veuillez un calcul valide (+,-,*, min:-100000, max:100000)")
 
     s.sendall(str.encode(val))
-    logging.info(f"Message envoyé au serveur {host} : {val}.")
+    logging.info("Message envoyé au serveur %s : %s.", HOST, val)
 
     data = int.from_bytes(s.recv(1024), byteorder="little", signed=True)
-    logging.info(f"Réponse reçue du serveur {host} : {data}.")
+    logging.info("Réponse reçue du serveur %s : %d.", HOST, data)
     print("Réponse du serveur: ", data)
 
     s.close()
 except socket.error as e:
-    logging.error(f"Impossible de se connecter au serveur {host} sur le port {port}.")
-except Exception as e:
-    print(e)
+    logging.error("Impossible de se connecter au serveur %s sur le port %d.", HOST, PORT)
 
 sys.exit(0)
