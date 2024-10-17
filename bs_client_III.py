@@ -3,8 +3,10 @@ import socket, sys, re, logging
 LOG_DIR = "/var/log/bs_client"
 LOG_FILE = "bs_client.log"
 
-def isCalcul(val:str):
+
+def isCalcul(val: str):
     return re.search("^(-?(100000|\d{0,5}))\s*([\+\-\*]\s*(-?(100000|\d{0,5})))*$", val)
+
 
 class CustomFormatter(logging.Formatter):
     yellow = "\x1b[33;20m"
@@ -18,7 +20,7 @@ class CustomFormatter(logging.Formatter):
         logging.INFO: format,
         logging.WARNING: yellow + format + reset,
         logging.ERROR: red + format + reset,
-        logging.CRITICAL: bold_red + format + reset
+        logging.CRITICAL: bold_red + format + reset,
     }
 
     def format(self, record):
@@ -26,10 +28,13 @@ class CustomFormatter(logging.Formatter):
         formatter = logging.Formatter(log_fmt)
         return formatter.format(record)
 
+
 file_handler = logging.FileHandler(f"{LOG_DIR}/{LOG_FILE}", encoding="utf-8", mode="a")
 file_handler.setLevel(logging.INFO)
 
-file_formatter = logging.Formatter("%(asctime)s %(levelname)s %(message)s", datefmt="%Y-%m-%d %H:%M")
+file_formatter = logging.Formatter(
+    "%(asctime)s %(levelname)s %(message)s", datefmt="%Y-%m-%d %H:%M"
+)
 file_handler.setFormatter(file_formatter)
 
 console_handler = logging.StreamHandler()
@@ -41,7 +46,7 @@ logger.setLevel(logging.INFO)
 logger.addHandler(file_handler)
 logger.addHandler(console_handler)
 
-host = '10.0.1.12'
+host = "10.0.1.12"
 port = 13337
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -60,7 +65,7 @@ try:
     s.sendall(str.encode(val))
     logging.info(f"Message envoyé au serveur {host} : {val}.")
 
-    data = int.from_bytes(s.recv(1024), byteorder='little', signed=True)
+    data = int.from_bytes(s.recv(1024), byteorder="little", signed=True)
     logging.info(f"Réponse reçue du serveur {host} : {data}.")
     print("Réponse du serveur: ", data)
 
