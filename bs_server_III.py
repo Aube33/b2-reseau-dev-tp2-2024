@@ -153,6 +153,7 @@ ARGS_CMD = {
     "--help": [show_help, 0],
 }
 
+# J'ai fais un sytème d'argument à la main car c'est plus drôle
 argv = sys.argv[1:]
 
 if len(argv) <= 1:
