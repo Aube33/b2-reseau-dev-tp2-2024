@@ -1,4 +1,4 @@
-import socket, sys, logging, os, time
+import socket, sys, logging, time
 from psutil import net_if_addrs
 
 LOG_DIR = "/var/log/bs_server"
@@ -48,7 +48,7 @@ port = 13337
 
 
 # === FONCTIONS ===
-def isIPv4(address: str) -> bool:
+def is_ipv4(address: str) -> bool:
     """
     Permet de check si un string est bien une IPv4
     """
@@ -59,19 +59,19 @@ def isIPv4(address: str) -> bool:
         return False
 
 
-def isIPAvailable(address: str) -> bool:
+def is_ipavailable(address: str) -> bool:
     """
     Permet de check si l'adresse IP entrée existe sur la machine
     """
     interfaces_data = net_if_addrs()
-    for name, addrs in interfaces_data.items():
+    for _, addrs in interfaces_data.items():
         for a in addrs:
             if a.address == address:
                 return True
     return False
 
 
-def setPort(p: str):
+def set_port(p: str):
     """
     Permet de définir le port vers lequel se connecter (Par défaut: 13337).
     """
@@ -93,18 +93,18 @@ def setPort(p: str):
     port = p
 
 
-def setListen(ip: str):
+def set_listen(ip: str):
     """
     Permet de définir l'IP du serveur vers lequel se connecter.
     """
     global host
 
-    if not isIPv4(ip):
+    if not is_ipv4(ip):
         raise ValueError(
             f"ERROR -l argument invalide. L'adresse {ip} n'est pas une adresse IP valide."
         )
         sys.exit(3)
-    if not isIPAvailable(ip):
+    if not is_ipavailable(ip):
         raise ValueError(
             f"ERROR -l argument invalide. L'adresse {ip} n'est pas l'une des adresses IP de cette machine."
         )
@@ -112,7 +112,7 @@ def setListen(ip: str):
     host = ip
 
 
-def showHelp():
+def show_help():
     """
     Permet d'afficher le menu d'aide
     """
@@ -131,18 +131,18 @@ def showHelp():
 
 # === COMMANDES ===
 ARGS_CMD = {
-    "-p": [setPort, 1],  # [Fonction, nombre d'argument]
-    "--port": [setPort, 1],
-    "-l": [setListen, 1],
-    "--listen": [setListen, 1],
-    "-h": [showHelp, 0],
-    "--help": [showHelp, 0],
+    "-p": [set_port, 1],  # [Fonction, nombre d'argument]
+    "--port": [set_port, 1],
+    "-l": [set_listen, 1],
+    "--listen": [set_listen, 1],
+    "-h": [show_help, 0],
+    "--help": [show_help, 0],
 }
 
 argv = sys.argv[1:]
 
 if len(argv) <= 1:
-    showHelp()
+    show_help()
 
 i = 0
 while i < len(argv):
@@ -154,16 +154,16 @@ while i < len(argv):
             i += 1
         else:
             if i + 1 >= len(argv):
-                showHelp()
+                show_help()
                 break
             cmd(argv[i + 1])
             i += 2
     else:
-        showHelp()
+        show_help()
         i += 1
 
 if host == "":
-    showHelp()
+    show_help()
 
 
 # === CONNEXION AU SERVEUR ===
