@@ -172,7 +172,7 @@ while True:
 
         result = eval(data)
 
-        conn.sendall(result.to_bytes(5, 'little'))
+        conn.sendall(result.to_bytes(5, 'little', signed=True))
         logging.info(f'Réponse envoyée au client {client_ip} : "{result}".')
 
         conn.close()
