@@ -56,10 +56,10 @@ try:
         raise ValueError("Mauvaise valeur entrée, soit waf soit meo !")
 
     s.sendall(str.encode(val))
-    logging.info("Message envoyé au serveur {host} : {val}.")
+    logging.info(f"Message envoyé au serveur {host} : {val}.")
 
     data = s.recv(1024).decode("utf-8")
-    logging.info("Réponse reçue du serveur {host} : {data}.")
+    logging.info(f"Réponse reçue du serveur {host} : {data}.")
     print("Réponse du serveur: ", data)
 
     s.close()

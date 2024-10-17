@@ -58,10 +58,10 @@ try:
         raise ValueError("Veuillez un calcul valide (+,-,*, min:-100000, max:100000)")
 
     s.sendall(str.encode(val))
-    logging.info("Message envoyé au serveur {host} : {val}.")
+    logging.info(f"Message envoyé au serveur {host} : {val}.")
 
     data = int.from_bytes(s.recv(1024), byteorder='little', signed=True)
-    logging.info("Réponse reçue du serveur {host} : {data}.")
+    logging.info(f"Réponse reçue du serveur {host} : {data}.")
     print("Réponse du serveur: ", data)
 
     s.close()
