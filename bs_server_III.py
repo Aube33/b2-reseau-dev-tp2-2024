@@ -166,6 +166,7 @@ while True:
         timeSave = time.time()
 
         data = conn.recv(1024).decode("utf-8")
+        if not data: continue
 
         logging.info(f'Le client {client_ip} a envoyé "{data}".')
 
