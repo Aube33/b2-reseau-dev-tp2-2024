@@ -170,10 +170,10 @@ while True:
 
         logging.info(f'Le client {client_ip} a envoyé "{data}".')
 
-        message = eval(data)
+        result = eval(data)
 
-        conn.sendall(message)
-        logging.info(f'Réponse envoyée au client {client_ip} : "{message}".')
+        conn.sendall(result.to_bytes(5, 'little'))
+        logging.info(f'Réponse envoyée au client {client_ip} : "{result}".')
 
         conn.close()
 
