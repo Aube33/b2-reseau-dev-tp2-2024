@@ -52,7 +52,7 @@ try:
 
     if type(val) is not str:
         raise TypeError("Veuillez entrer une string !")
-    elif not re.search("^.*(meo|waf).*$", val):
+    elif not re.search(r"^.*(meo|waf).*$", val):
         raise ValueError("Mauvaise valeur entrée, soit waf soit meo !")
 
     s.sendall(str.encode(val))

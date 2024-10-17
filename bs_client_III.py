@@ -15,7 +15,7 @@ def is_calcul(value: str):
     multiplication, addition, soustraction
     et avec comme valeurs max -100000 et 100000
     """
-    return re.search("^(-?(100000|\d{0,5}))\s*([\+\-\*]\s*(-?(100000|\d{0,5})))*$", value)
+    return re.search(r"^(-?(100000|\d{0,5}))\s*([\+\-\*]\s*(-?(100000|\d{0,5})))*$", value)
 
 
 class CustomFormatter(logging.Formatter):
