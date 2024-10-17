@@ -60,7 +60,7 @@ try:
     s.sendall(str.encode(val))
     logging.info("Message envoyé au serveur {host} : {val}.")
 
-    data = int.from_bytes(s.recv(1024), byteorder='little', signed=False)
+    data = int.from_bytes(s.recv(1024), byteorder='little', signed=True)
     logging.info("Réponse reçue du serveur {host} : {data}.")
     print("Réponse du serveur: ", data)
 
