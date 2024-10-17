@@ -166,13 +166,12 @@ while True:
         timeSave = time.time()
 
         data = conn.recv(1024).decode("utf-8")
-        if not data: break
 
         logging.info(f'Le client {client_ip} a envoyé "{data}".')
 
-        message = str(eval(data))
+        message = eval(data)
 
-        conn.sendall(str.encode(message, "utf-8"))
+        conn.sendall(message)
         logging.info(f'Réponse envoyée au client {client_ip} : "{message}".')
 
         conn.close()
