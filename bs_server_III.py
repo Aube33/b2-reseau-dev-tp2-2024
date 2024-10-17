@@ -1,23 +1,77 @@
-import socket, sys, logging, time
+# pylint: disable=invalid-name, line-too-long, import-error, duplicate-except, eval-used, unreachable
+
+"""Module permettant de démarrer un serveur TCP."""
+
+import socket
+import sys
+import logging
+import time
 from psutil import net_if_addrs
 
 LOG_DIR = "/var/log/bs_server"
 LOG_FILE = "bs_server.log"
 
+class Server():
+    """
+    Classe pour gérer le serveur
+    """
+    host = ""
+    port = 13337
+
+    def set_port(self, p: str):
+        """
+        Permet de définir le port vers lequel se connecter (Par défaut: 13337).
+        """
+        p = int(p)
+
+        if not 0 < p < 65535:
+            raise ValueError(
+                f"ERROR -p argument invalide. Le port spécifié {p} n'est pas un port valide (de 0 à 65535)."
+            )
+            sys.exit(1)
+        if p <= 1024:
+            raise ValueError(
+                f"ERROR -p argument invalide. Le port spécifié {p} est un port privilégié. Spécifiez un port au dessus de 1024."
+            )
+            sys.exit(2)
+
+        self.port = p
+
+
+    def set_listen(self, ip: str):
+        """
+        Permet de définir l'IP du serveur vers lequel se connecter.
+        """
+
+        if not is_ipv4(ip):
+            raise ValueError(
+                f"ERROR -l argument invalide. L'adresse {ip} n'est pas une adresse IP valide."
+            )
+            sys.exit(3)
+        if not is_ipavailable(ip):
+            raise ValueError(
+                f"ERROR -l argument invalide. L'adresse {ip} n'est pas l'une des adresses IP de cette machine."
+            )
+            sys.exit(4)
+        self.host = ip
+
 
 class CustomFormatter(logging.Formatter):
+    """
+    Classe pour avoir un logger dans la console avec des jolies couleurs
+    """
     yellow = "\x1b[33;20m"
     red = "\x1b[31;20m"
     bold_red = "\x1b[31;1m"
     reset = "\x1b[0m"
-    format = "%(asctime)s %(levelname)s %(message)s"
+    log_format = "%(asctime)s %(levelname)s %(message)s"
 
     FORMATS = {
-        logging.DEBUG: format,
-        logging.INFO: format,
-        logging.WARNING: yellow + format + reset,
-        logging.ERROR: red + format + reset,
-        logging.CRITICAL: bold_red + format + reset,
+        logging.DEBUG: log_format,
+        logging.INFO: log_format,
+        logging.WARNING: yellow + log_format + reset,
+        logging.ERROR: red + log_format + reset,
+        logging.CRITICAL: bold_red + log_format + reset,
     }
 
     def format(self, record):
@@ -43,9 +97,6 @@ logger.setLevel(logging.INFO)
 logger.addHandler(file_handler)
 logger.addHandler(console_handler)
 
-host = ""
-port = 13337
-
 
 # === FONCTIONS ===
 def is_ipv4(address: str) -> bool:
@@ -55,7 +106,7 @@ def is_ipv4(address: str) -> bool:
     try:
         socket.inet_aton(address)
         return True
-    except:
+    except socket.error:
         return False
 
 
@@ -71,45 +122,6 @@ def is_ipavailable(address: str) -> bool:
     return False
 
 
-def set_port(p: str):
-    """
-    Permet de définir le port vers lequel se connecter (Par défaut: 13337).
-    """
-    global port
-
-    p = int(p)
-
-    if not 0 < p < 65535:
-        raise ValueError(
-            f"ERROR -p argument invalide. Le port spécifié {p} n'est pas un port valide (de 0 à 65535)."
-        )
-        sys.exit(1)
-    if p <= 1024:
-        raise ValueError(
-            f"ERROR -p argument invalide. Le port spécifié {p} est un port privilégié. Spécifiez un port au dessus de 1024."
-        )
-        sys.exit(2)
-
-    port = p
-
-
-def set_listen(ip: str):
-    """
-    Permet de définir l'IP du serveur vers lequel se connecter.
-    """
-    global host
-
-    if not is_ipv4(ip):
-        raise ValueError(
-            f"ERROR -l argument invalide. L'adresse {ip} n'est pas une adresse IP valide."
-        )
-        sys.exit(3)
-    if not is_ipavailable(ip):
-        raise ValueError(
-            f"ERROR -l argument invalide. L'adresse {ip} n'est pas l'une des adresses IP de cette machine."
-        )
-        sys.exit(4)
-    host = ip
 
 
 def show_help():
@@ -129,12 +141,14 @@ def show_help():
     sys.exit(1)
 
 
+server = Server()
+
 # === COMMANDES ===
 ARGS_CMD = {
-    "-p": [set_port, 1],  # [Fonction, nombre d'argument]
-    "--port": [set_port, 1],
-    "-l": [set_listen, 1],
-    "--listen": [set_listen, 1],
+    "-p": [server.set_port, 1],  # [Fonction, nombre d'argument]
+    "--port": [server.set_port, 1],
+    "-l": [server.set_listen, 1],
+    "--listen": [server.set_listen, 1],
     "-h": [show_help, 0],
     "--help": [show_help, 0],
 }
@@ -146,7 +160,7 @@ if len(argv) <= 1:
 
 i = 0
 while i < len(argv):
-    if argv[i] in ARGS_CMD.keys():
+    if argv[i] in ARGS_CMD:
         cmd = ARGS_CMD[argv[i]][0]
         argNumber = ARGS_CMD[argv[i]][1]
         if argNumber == 0:
@@ -162,17 +176,17 @@ while i < len(argv):
         show_help()
         i += 1
 
-if host == "":
+if server.host == "":
     show_help()
 
 
 # === CONNEXION AU SERVEUR ===
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.bind((host, port))
+s.bind((server.host, server.port))
 s.listen(1)
 s.settimeout(60)
 
-logging.info(f"Le serveur tourne sur {host}:{port}")
+logging.info("Le serveur tourne sur %s:%d", server.host, server.port)
 timeSave = time.time()
 
 
@@ -180,19 +194,19 @@ while True:
     try:
         conn, (client_ip, client_port) = s.accept()
 
-        logging.info(f"Un client ({client_ip}) s'est connecté.")
+        logging.info("Un client (%s) s'est connecté.", client_ip)
         timeSave = time.time()
 
         data = conn.recv(1024).decode("utf-8")
         if not data:
             continue
 
-        logging.info(f'Le client {client_ip} a envoyé "{data}".')
+        logging.info('Le client %s a envoyé "%s".', client_ip, data)
 
         result = eval(data)
 
         conn.sendall(result.to_bytes(5, "little", signed=True))
-        logging.info(f'Réponse envoyée au client {client_ip} : "{result}".')
+        logging.info('Réponse envoyée au client %s : "%s".', client_ip, result)
 
         conn.close()
 
